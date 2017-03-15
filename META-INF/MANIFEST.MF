@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: chess.Chess
+Main-Class: chess.Chess
+
