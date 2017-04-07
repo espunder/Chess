@@ -1,13 +1,12 @@
 package chess;
 
+import brain.Values;
 import swing.*;
-
+import brain.*;
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 
 /*
 * + МАТ,  ПАТ
@@ -37,8 +36,8 @@ public class Chess {
     static ChessItem iAmAttackYou = null;
     public static String step = null;
     private static int stepscount = 0;
-    private static int itisMAT = 0;
-    private static int itisPAT = 0;
+    public static int itisMAT = 0;
+    public static int itisPAT = 0;
 
     private static FileOutputStream outputStream;
 
@@ -96,32 +95,42 @@ public class Chess {
         writeLogs("Первыми ходят белые.");
 
         while (true) {
-
             try {
-                step = null;
-                // в нити с слушателями клика мышки в это время строится String step, когда построится - main пойдет дальше.
+                System.out.println("FLAG 1");
+                Thread.sleep(3000);
+                long l = new Date().getTime();
+                step = II.deepMind("white");
+                long timeOfCount = new Date().getTime() - l;
+                System.out.printf("Время подсчета: %ds%dms",timeOfCount/1000,timeOfCount%1000);
+
+
+             /*   step = null;
+                // в нити с слушателями клика мышки в это время строится String hadStep, когда построится - main пойдет дальше.
                 while (step == null) {
                     Thread.sleep(100);
                 }
-
-                if (isCorrectText(step))
+            */
+             /*   if (isCorrectText(step))
                     chessBoard.stepFromTo(step);// находим фигуру, которая стоит на этом поле, добавляем ее в локальную переменную объекта chessBoard "chessBoard.getLocalItem()"
                 else {
                     continue;
                 }
-
+*/
                 int x = ChessBoard.charToX(step.charAt(3));
                 int y = Integer.parseInt(step.substring(4));
 
 
                 if (canMove(x, y))//проверяем возможность хода
                 {
-                    if (chessBoard.getLocalItem().toString().equals("Pawn")) // добавляем маркет к пешке
+                    if (chessBoard.getLocalItem().toString().equals("Pawn")) // добавляем маркер к пешке
                     {
                         vsyatienaprohodePewkaY = chessBoard.getLocalItem().getY();
                     }
                     writeLogs(step);
+
+//                  *****************************************************************
                     chessBoard.getLocalItem().toMove(x, y); // либо ест и ходит, либо просто ходит.
+//                  *****************************************************************
 
                     mainBoard.draw(ChessBoard.items);
                     stepscount++;
@@ -137,6 +146,7 @@ public class Chess {
                         vzyatieNaProhode(chessBoard.getLocalItem());//добавляем маяк, если пешка пошла на 2 клетки вперед.
 
                     schahimat(chessBoard);// ШАХ! (или МАТ)
+
 
                     if (itisMAT > 0) {
                         String text = "Игра окончена в пользу " + (chessBoard.getLocalItem().getColor().equals("black") ? "Чёрных " : "Белых ") + "\n"
@@ -260,46 +270,45 @@ public class Chess {
         }
     }
 
-    private static void schahimat(ChessBoard board) {
+    public static void schahimat(ChessBoard board) {
         if (board.getLocalItem().getColor().equals("white")) {
-            if (ChessBoard.bKing.kingUnderAttack(ChessBoard.bKing.getX(), ChessBoard.bKing.getY())) {
+            if (kingUnderAttack(ChessBoard.bKing, ChessBoard.bKing.getX(), ChessBoard.bKing.getY())) {
                 if (mat(ChessBoard.bKing)) {
-                    ShahIMat.runShahIMat(false); // мат
-                    System.out.println("ШАХ и МАТ. Победили БЕЛЫЕ!");
-                    writeLogs("ШАХ и МАТ. Победили БЕЛЫЕ!");
+//                    ShahIMat.runShahIMat(false); // мат
+//                    System.out.println("ШАХ и МАТ. Победили БЕЛЫЕ!");
+//                    writeLogs("ШАХ и МАТ. Победили БЕЛЫЕ!");
                     return;
                 }
-                ShahIMat.runShahIMat(true); // шах
-                System.out.println("ШАХ ЧЁРНЫМ!");
-                writeLogs("ШАХ ЧЁРНЫМ!");
+//                ShahIMat.runShahIMat(true); // шах, графика
+//                System.out.println("ШАХ ЧЁРНЫМ!");
+//                writeLogs("ШАХ ЧЁРНЫМ!");
             } else {
                 if (pat(ChessBoard.bKing)) {
-                    System.out.println("ПАТ. У ЧЕРНЫХ нет возможных ходов. Ничья!");
-                    writeLogs("ПАТ. У ЧЕРНЫХ нет возможных ходов. Ничья!");
+//                    System.out.println("ПАТ. У ЧЕРНЫХ нет возможных ходов. Ничья!");
+//                    writeLogs("ПАТ. У ЧЕРНЫХ нет возможных ходов. Ничья!");
                 }
             }
         } else {
-            if (ChessBoard.wKing.kingUnderAttack(ChessBoard.wKing.getX(), ChessBoard.wKing.getY())) {
+            if (kingUnderAttack(ChessBoard.wKing, ChessBoard.wKing.getX(), ChessBoard.wKing.getY())) {
                 if (mat(ChessBoard.wKing)) {
-                    ShahIMat.runShahIMat(false); // мат
-                    System.out.println("ШАХ и МАТ. Победили ЧЁРНЫЕ!");
-                    writeLogs("ШАХ и МАТ. Победили ЧЁРНЫЕ!");
+//                    ShahIMat.runShahIMat(false); // мат
+//                    System.out.println("ШАХ и МАТ. Победили ЧЁРНЫЕ!");
+//                    writeLogs("ШАХ и МАТ. Победили ЧЁРНЫЕ!");
                     return;
                 }
-                ShahIMat.runShahIMat(true); // шах
-                System.out.println("ШАХ БЕЛЫМ!");
-                writeLogs("ШАХ БЕЛЫМ!");
+//                ShahIMat.runShahIMat(true); // шах
+//                System.out.println("ШАХ БЕЛЫМ!");
+//                writeLogs("ШАХ БЕЛЫМ!");
             } else {
                 if (pat(ChessBoard.wKing)) {
-                    System.out.println("ПАТ. У БЕЛЫХ нет возможных ходов. Ничья!");
-                    writeLogs("ПАТ. У БЕЛЫХ нет возможных ходов. Ничья!");
+//                    System.out.println("ПАТ. У БЕЛЫХ нет возможных ходов. Ничья!");
+//                    writeLogs("ПАТ. У БЕЛЫХ нет возможных ходов. Ничья!");
                 }
             }
         }
     }
 
     private static boolean mat(King king) {
-        //исправить. считает что мат, когда королю некуда пойти, но его может спасти(закрыть) другая фигура.
         int[] kingStepsX = {king.getX() - 1, king.getX(), king.getX() + 1};
         int[] kingStepsY = {king.getY() - 1, king.getY(), king.getY() + 1};
         //1.)Король может уйти от шаха( съесть обидчика).
@@ -316,10 +325,10 @@ public class Chess {
         //спасение: съесть атакующую фигуру или встать между ей и мной.
 
         //2.а.) съесть атакующую фигуру
-        if (king.kingUnderAttack(king.getX(), king.getY())) {
+        if (kingUnderAttack(king, king.getX(), king.getY())) {
             for (ChessItem item : ChessBoard.items) {
                 if (item.getColor().equals(king.getColor()) && !(item instanceof King)) {
-                    if (item.hasMove(iAmAttackYou.getX(), iAmAttackYou.getY())) {
+                    if (item.hasMove( iAmAttackYou.getX(), iAmAttackYou.getY())) {
                         if (attackKing(king, item, iAmAttackYou.getX(), iAmAttackYou.getY())) {
                             itisMAT++;
                             return true;
@@ -384,7 +393,7 @@ public class Chess {
         }
     }
 
-    static boolean attackKing(King myKing, ChessItem myItem, int newItemX, int newItemY) {
+    public static boolean attackKing(King myKing, ChessItem myItem, int newItemX, int newItemY) {
         int hasitem = 0;
         int defaultX = myItem.getX();
         int defaultY = myItem.getY();
@@ -418,5 +427,89 @@ public class Chess {
             ChessBoard.isItem(newItemX, -1).setY(newItemY);
         }
         return false;
+    }
+
+    public static boolean kingUnderAttack(ChessItem king, int x, int y) {
+        // сохраняем начальное положение короля в координаты default
+        int defaultX = king.getX();
+        int defaultY = king.getY();
+        // ставим короля на новое место, и смотрим, будет ли он под ударом.
+        if (!ChessBoard.hasItem(x, y) || (x==defaultX && y==defaultY))
+        {
+            king.setX(x);
+            king.setY(y);
+            for (ChessItem item : ChessBoard.items)
+            {
+                if (!item.getColor().equals(king.getColor()) && !(item instanceof King))
+                {
+                    if(item.hasMove(x,y))
+                    {
+                        iAmAttackYou = item;
+                        king.setX(defaultX);
+                        king.setY(defaultY);
+                        return true;
+                    }
+                    else continue;
+                }
+                else if(!item.getColor().equals(king.getColor()) && (item instanceof King))
+                {
+                    if (((x - item.getX()) == 0 || Math.abs(x - item.getX()) == 1) && ((y - item.getY()) == 0 || Math.abs(y - item.getY()) == 1))
+                    {
+                        iAmAttackYou = item;
+                        king.setX(defaultX);
+                        king.setY(defaultY);
+                        return true;
+                    }
+                    else continue;
+                }
+                else continue;
+            }
+            king.setX(defaultX);
+            king.setY(defaultY);
+            return false;
+        }
+        else if (!ChessBoard.isItem(x, y).getColor().equals(king.getColor()))
+        {
+            ChessBoard.isItem(x, y).setX(18);
+            ChessBoard.isItem(18, y).setY(0);
+            king.setX(x);
+            king.setY(y);
+            for (ChessItem item : ChessBoard.items)
+            {
+                if (!item.getColor().equals(king.getColor()) && !(item instanceof King))
+                {
+                    if(item.hasMove(x,y))
+                    {
+                        iAmAttackYou = item;
+                        ChessBoard.isItem(18, 0).setX(x);
+                        ChessBoard.isItem(x, 0).setY(y);
+                        king.setX(defaultX);
+                        king.setY(defaultY);
+                        return true;
+                    }
+                    else continue;
+                }
+                else if(!item.getColor().equals(king.getColor()) && (item instanceof King))
+                {
+                    if (((x - item.getX()) == 0 || Math.abs(x - item.getX()) == 1) && ((y - item.getY()) == 0 || Math.abs(y - item.getY()) == 1))
+                    {
+                        iAmAttackYou = item;
+                        ChessBoard.isItem(18, 0).setX(x);
+                        ChessBoard.isItem(x, 0).setY(y);
+                        king.setX(defaultX);
+                        king.setY(defaultY);
+                        return true;
+                    }
+                    else continue;
+                }
+                else continue;
+            }
+            ChessBoard.isItem(18, 0).setX(x);
+            ChessBoard.isItem(x, 0).setY(y);
+            king.setX(defaultX);
+            king.setY(defaultY);
+            return false;
+        }
+        else return false;
     }
 }

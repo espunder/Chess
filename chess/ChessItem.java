@@ -17,39 +17,39 @@ public abstract class ChessItem implements Move {
         return x;
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public String toString(){
-        return getClass().getSimpleName();
-    }
-
-    void setColor(String color) {
-        this.color = color;
-    }
-
     void setX(int x) {
         this.x = x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     void setY(int y) {
         this.y = y;
     }
 
-    boolean getHadSteps() {
-        return hadSteps != 0;
+    public String getColor() {
+        return color;
+    }
+
+    void setColor(String color) {
+        this.color = color;
+    }
+
+    boolean getHadStep() {
+        return hadStep != 0;
+    }
+
+    public String toString(){
+        return getClass().getSimpleName();
     }
 
     void eatIt(int x, int y) {
         ChessBoard.items.remove(ChessBoard.isItem(x, y));
     }
 
-    int hadSteps; // подсчет количества ходов фигуры
+    public int hadStep; // подсчет количества ходов фигуры
 
     private String color; // цвет
 
@@ -73,7 +73,7 @@ class King extends ChessItem { // Король
         setColor(color);
         setX(x);
         setY(y);
-        hadSteps = 0;
+        hadStep = 0;
     } //конструктор
 
     public boolean hasMove(int x, int y) {
@@ -94,19 +94,19 @@ class King extends ChessItem { // Король
             {
                 return false; // на новом месте фигура Вашего цвета
             }
-             else return !kingUnderAttack(x, y);
+             else return !Chess.kingUnderAttack(this, x, y);
         } else
-            return (!getHadSteps() && y == getY() && !kingUnderAttack(getX(), getY()) && !kingUnderAttack(x, y) // рокировка
+            return (!getHadStep() && y == getY() && !Chess.kingUnderAttack(this, getX(), getY()) && !Chess.kingUnderAttack(this, x, y) // рокировка
                     &&
                     (
-                            (y == 1 && x == 3 && !ChessBoard.wRook1.getHadSteps() && !ChessBoard.hasItem(2, 1) && !ChessBoard.hasItem(3, 1) && !ChessBoard.hasItem(4, 1) &&
-                                    !kingUnderAttack(2, 1) && !kingUnderAttack(3, 1) && !kingUnderAttack(4, 1))
-                                    || (y == 1 && x == 7 && !ChessBoard.wRook2.getHadSteps() && !ChessBoard.hasItem(6, 1) && !ChessBoard.hasItem(7, 1) &&
-                                    !kingUnderAttack(6, 1) && !kingUnderAttack(7, 1))
-                                    || (y == 8 && x == 3 && !ChessBoard.bRook1.getHadSteps() && !ChessBoard.hasItem(2, 8) && !ChessBoard.hasItem(3, 8) && !ChessBoard.hasItem(4, 8) &&
-                                    !kingUnderAttack(2, 8) && !kingUnderAttack(3, 8) && !kingUnderAttack(4, 8))
-                                    || (y == 8 && x == 7 && !ChessBoard.bRook2.getHadSteps() && !ChessBoard.hasItem(6, 8) && !ChessBoard.hasItem(7, 8) &&
-                                    !kingUnderAttack(6, 8) && !kingUnderAttack(7, 8))
+                            (y == 1 && x == 3 && !ChessBoard.wRook1.getHadStep() && !ChessBoard.hasItem(2, 1) && !ChessBoard.hasItem(3, 1) && !ChessBoard.hasItem(4, 1) &&
+                                    !Chess.kingUnderAttack(this, 2, 1) && !Chess.kingUnderAttack(this, 3, 1) && !Chess.kingUnderAttack(this, 4, 1))
+                                    || (y == 1 && x == 7 && !ChessBoard.wRook2.getHadStep() && !ChessBoard.hasItem(6, 1) && !ChessBoard.hasItem(7, 1) &&
+                                    !Chess.kingUnderAttack(this, 6, 1) && !Chess.kingUnderAttack(this, 7, 1))
+                                    || (y == 8 && x == 3 && !ChessBoard.bRook1.getHadStep() && !ChessBoard.hasItem(2, 8) && !ChessBoard.hasItem(3, 8) && !ChessBoard.hasItem(4, 8) &&
+                                    !Chess.kingUnderAttack(this, 2, 8) && !Chess.kingUnderAttack(this, 3, 8) && !Chess.kingUnderAttack(this, 4, 8))
+                                    || (y == 8 && x == 7 && !ChessBoard.bRook2.getHadStep() && !ChessBoard.hasItem(6, 8) && !ChessBoard.hasItem(7, 8) &&
+                                    !Chess.kingUnderAttack(this, 6, 8) && !Chess.kingUnderAttack(this, 7, 8))
                     )
             );
     }
@@ -122,25 +122,25 @@ class King extends ChessItem { // Король
             if (x == 3 && y == 1) {
                 ChessBoard.wRook1.setX(4);
                 ChessBoard.wRook1.setY(1);
-                ChessBoard.wRook1.hadSteps++;
+                ChessBoard.wRook1.hadStep++;
                 System.out.println("Длинная рокировка.");
                 Chess.writeLogs("Длинная рокировка.");
             } else if (x == 7 && y == 1) {
                 ChessBoard.wRook2.setX(6);
                 ChessBoard.wRook2.setY(1);
-                ChessBoard.wRook2.hadSteps++;
+                ChessBoard.wRook2.hadStep++;
                 System.out.println("Короткая рокировка.");
                 Chess.writeLogs("Короткая рокировка.");
             } else if (x == 3 && y == 8) {
                 ChessBoard.bRook1.setX(4);
                 ChessBoard.bRook1.setY(8);
-                ChessBoard.bRook1.hadSteps++;
+                ChessBoard.bRook1.hadStep++;
                 System.out.println("Длинная рокировка.");
                 Chess.writeLogs("Длинная рокировка.");
             } else if (x == 7 && y == 8) {
                 ChessBoard.bRook2.setX(6);
                 ChessBoard.bRook2.setY(8);
-                ChessBoard.bRook2.hadSteps++;
+                ChessBoard.bRook2.hadStep++;
                 System.out.println("Короткая рокировка.");
                 Chess.writeLogs("Короткая рокировка.");
             }
@@ -153,89 +153,6 @@ class King extends ChessItem { // Король
         }
     }
 
-    boolean kingUnderAttack(int x, int y) {
-        // сохраняем начальное положение короля в координаты default
-        int defaultX = getX();
-        int defaultY = getY();
-        // ставим короля на новое место, и смотрим, будет ли он под ударом.
-        if (!ChessBoard.hasItem(x, y) || (x==defaultX && y==defaultY))
-        {
-            this.setX(x);
-            this.setY(y);
-            for (ChessItem item : ChessBoard.items)
-            {
-                if (!item.getColor().equals(getColor()) && !(item instanceof King))
-                {
-                    if(item.hasMove(x,y))
-                    {
-                        Chess.iAmAttackYou = item;
-                        this.setX(defaultX);
-                        this.setY(defaultY);
-                        return true;
-                    }
-                    else continue;
-                }
-                else if(!item.getColor().equals(getColor()) && (item instanceof King))
-                {
-                    if (((x - item.getX()) == 0 || Math.abs(x - item.getX()) == 1) && ((y - item.getY()) == 0 || Math.abs(y - item.getY()) == 1))
-                    {
-                        Chess.iAmAttackYou = item;
-                        this.setX(defaultX);
-                        this.setY(defaultY);
-                        return true;
-                    }
-                    else continue;
-                }
-                else continue;
-            }
-            this.setX(defaultX);
-            this.setY(defaultY);
-            return false;
-        }
-        else if (!ChessBoard.isItem(x, y).getColor().equals(getColor()))
-        {
-            ChessBoard.isItem(x, y).setX(18);
-            ChessBoard.isItem(18, y).setY(0);
-            this.setX(x);
-            this.setY(y);
-            for (ChessItem item : ChessBoard.items)
-            {
-                if (!item.getColor().equals(getColor()) && !(item instanceof King))
-                {
-                    if(item.hasMove(x,y))
-                    {
-                        Chess.iAmAttackYou = item;
-                        ChessBoard.isItem(18, 0).setX(x);
-                        ChessBoard.isItem(x, 0).setY(y);
-                        this.setX(defaultX);
-                        this.setY(defaultY);
-                        return true;
-                    }
-                    else continue;
-                }
-                else if(!item.getColor().equals(getColor()) && (item instanceof King))
-                {
-                    if (((x - item.getX()) == 0 || Math.abs(x - item.getX()) == 1) && ((y - item.getY()) == 0 || Math.abs(y - item.getY()) == 1))
-                    {
-                        Chess.iAmAttackYou = item;
-                        ChessBoard.isItem(18, 0).setX(x);
-                        ChessBoard.isItem(x, 0).setY(y);
-                        this.setX(defaultX);
-                        this.setY(defaultY);
-                        return true;
-                    }
-                    else continue;
-                }
-                else continue;
-            }
-            ChessBoard.isItem(18, 0).setX(x);
-            ChessBoard.isItem(x, 0).setY(y);
-            this.setX(defaultX);
-            this.setY(defaultY);
-            return false;
-        }
-        else return false;
-    }
 }
 
 class Queen extends ChessItem { // Ферзь(Королева)
@@ -244,7 +161,7 @@ class Queen extends ChessItem { // Ферзь(Королева)
         setColor(color);
         setX(x);
         setY(y);
-        hadSteps = 0;
+        hadStep = 0;
     } // конструктор
 
     @Override
@@ -303,7 +220,7 @@ class Rook extends ChessItem { // Ладья(Тура)
         setColor(color);
         setX(x);
         setY(y);
-        hadSteps = 0;
+        hadStep = 0;
     }
 
     @Override
@@ -351,7 +268,7 @@ class Knight extends ChessItem { // Конь
          setColor(color);
          setX(x);
          setY(y);
-        hadSteps = 0;
+        hadStep = 0;
     }
 
     @Override
@@ -385,7 +302,7 @@ class Bishop extends ChessItem { // Слон(Офицер)
         setColor(color);
         setX(x);
         setY(y);
-        hadSteps = 0;
+        hadStep = 0;
     }
 
     @Override
@@ -427,7 +344,7 @@ class Pawn extends ChessItem { // Пешка
          setColor(color);
          setX(x);
          setY(y);
-        hadSteps = 0;
+        hadStep = 0;
     }
 
     @Override
@@ -437,9 +354,9 @@ class Pawn extends ChessItem { // Пешка
                 return false;
             } else return true;
 
-        } else if (getColor().equals("white") && !getHadSteps() && x == getX() && y == (getY() + 2) && !ChessBoard.hasItem(x, y) && !ChessBoard.hasItem(x, y - 1) // начальный ход пешки на 2 клетки вперед
+        } else if (getColor().equals("white") && !getHadStep() && x == getX() && y == (getY() + 2) && !ChessBoard.hasItem(x, y) && !ChessBoard.hasItem(x, y - 1) // начальный ход пешки на 2 клетки вперед
                 ||
-                getColor().equals("black") && !getHadSteps() && x == getX() && y == (getY() - 2) && !ChessBoard.hasItem(x, y) && !ChessBoard.hasItem(x, y + 1)) {
+                getColor().equals("black") && !getHadStep() && x == getX() && y == (getY() - 2) && !ChessBoard.hasItem(x, y) && !ChessBoard.hasItem(x, y + 1)) {
             return true;
         } else
             return (
