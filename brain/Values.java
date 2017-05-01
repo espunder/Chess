@@ -18,23 +18,27 @@ public class Values {
     public static int values (String color){
         int value = 0;
         Chess.schahimat(Chess.chessBoard);
-        if (Chess.itisMAT>0) return 1000;
-        if (Chess.itisPAT>0) return -100;
+
+
         for (ChessItem item : ChessBoard.items){
             if (item.getColor().equals(color))
             {
-                value += mapValues.get(item.getClass().getSimpleName());
-                if (item.getClass().getSimpleName().equals("King")){
+                value += mapValues.get(item.getClassName());
+                if (Chess.itisMAT>0) value += 1000;
+                if (Chess.itisPAT>0) value -= 100;
+                if (item.getClassName().equals("King")){
                     if(Chess.kingUnderAttack(item, item.getX(), item.getY()))
-                        value-=3;
+                        value-=300;
             }
             }
             else
             {
-                value -= mapValues.get(item.getClass().getSimpleName());
-                if (item.getClass().getSimpleName().equals("King")){
+                value -= mapValues.get(item.getClassName());
+                if (Chess.itisMAT>0) value -= 1000;
+                if (Chess.itisPAT>0) value += 100;
+                if (item.getClassName().equals("King")){
                     if(Chess.kingUnderAttack(item, item.getX(), item.getY()))
-                        value+=3;
+                        value+=300;
             }
             }
     }
@@ -44,7 +48,7 @@ public class Values {
   /*  private static boolean kingUnderAttack(int x, int y, String color) {
             for (ChessItem item : ChessBoard.items)
             {
-                if (!item.getColor().equals(color) && !item.getClass().getSimpleName().equals("King"))
+                if (!item.getColor().equals(color) && !item.getClassName().equals("King"))
                 {
                         if (item.hasMove(x, y)) return true;
                 }
