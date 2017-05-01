@@ -7,27 +7,34 @@ import java.util.*;
 public class II {
 
     public static String deepMind (String color, ArrayList<ChessItem> items){
+        // массив оценочных значений. сюда добавляются пары "строка(координата хода)"-"число (оценка ситуации на доске после этого хода)"
         HashMap<String,Integer> values = new HashMap<>();
+        
+        //создаем список-копию всех наших фигур, для того чтобы 
+        //а.) не было исключения ConcurentModificationException и 
+        //б.) мы могли вернуть координаты фигур, которыми ПРОБУЕМ ходить в начальное положение. 
+        //у меня в игре нет доски, все данные о местоположении фигур хранятся в самих объектах фигур.
         ArrayList<ChessItem> abstractItems = copyOfItems(items);
 
-        String step = "";
+        String step = "";//step  - строка с координатой самого выгодного хода, который в итоге должен вернуть наш метод
         for(ChessItem item : abstractItems)
         {
             if (item.getColor().equals(color)){
                 for (int x = 1; x < 9; x++) {
                     for (int y = 1; y < 9; y++){
-                        if (item.hasMove(x, y)) {
+                        if (item.hasMove(x, y)) { 
+                            // для всех фигур нашего цвета пробуем сделать ход на все клетки поля. если ход допустим, то..
                             step = ((char)(item.getX()+96)) + String.valueOf(item.getY()) + "-" + ((char)(x+96)) + String.valueOf(y) ; //e2-e4
-                            Chess.chessBoard.setLocalItem(item);
-                            if (Chess.canMove((byte)x,(byte)y)) {
-                                item.toMove(x, y);//h7-h5
+                            Chess.chessBoard.setLocalItem(item);//"кладем в руку фигуру, которой ходим"
+                            if (Chess.canMove((byte)x,(byte)y)) {//еще одна проверка на возможность хода этой фигурой, проверка на вскрытый шах и проч.
+                                item.toMove(x, y);//h7-h5. делаем ход.
                                 //String step2 = deepMind2(item.getColor().equals("white")?"black":"white",abstractItems);
                                 //Chess.chessBoard.setLocalItem(ChessBoard.isItem(ChessBoard.charToX(step2.charAt(0)),step2.charAt(1)));
                                 //ChessBoard.isItem(ChessBoard.charToX(step2.charAt(0)),step2.charAt(1)).toMove(ChessBoard.charToX(step2.charAt(3)),step2.charAt(4));//за белую власть
-                                int m = Values.values(color);
-                                values.put(step, m);
-                                ((Figure) item).recover();
-                                if (m == 1000) return step;
+                                int m = Values.values(color);//оценка
+                                values.put(step, m);//кладем пару в наш массив
+                                ((Figure) item).recover();//делаем возврат измененных данных фигур ( короч откат сделанного хода, возврат предыдущего состояния доски)
+                                if (m == 1000) return step;//если можем ставить мат - сразу возвращаем координаты хода для мата
                             }
                             step = "";
                         }
@@ -36,7 +43,7 @@ public class II {
             }
         }
 
-
+        //выбираем пару с наивцысшей оценкой, лучший ход.
         int max = values.values().iterator().next();
         for (Map.Entry<String, Integer> pair : values.entrySet()){
             if (pair.getValue() >= max){
