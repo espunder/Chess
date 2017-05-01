@@ -96,26 +96,29 @@ public class Chess {
 
         while (true) {
             try {
-                System.out.println("FLAG 1");
-                Thread.sleep(3000);
-                long l = new Date().getTime();
-                step = II.deepMind("white");
-                long timeOfCount = new Date().getTime() - l;
-                System.out.printf("Время подсчета: %ds%dms",timeOfCount/1000,timeOfCount%1000);
 
-
-             /*   step = null;
-                // в нити с слушателями клика мышки в это время строится String hadStep, когда построится - main пойдет дальше.
-                while (step == null) {
-                    Thread.sleep(100);
+                if (stepscount%2==1) {
+                    System.out.println("FLAG 1");
+                    Thread.sleep(1200);
+                    long l = new Date().getTime();
+                    step = II.deepMind("black", ChessBoard.items); //g4-h5
+                    long timeOfCount = new Date().getTime() - l;
+                    System.out.printf("Время подсчета: %ds%dms\n\n", timeOfCount / 1000, timeOfCount % 1000);
                 }
-            */
-             /*   if (isCorrectText(step))
+                else {
+
+                    step = null;
+                    // в нити с слушателями клика мышки в это время строится String hadStep, когда построится - main пойдет дальше.
+                    while (step == null) {
+                        Thread.sleep(100);
+                    }
+                }
+                if (isCorrectText(step))
                     chessBoard.stepFromTo(step);// находим фигуру, которая стоит на этом поле, добавляем ее в локальную переменную объекта chessBoard "chessBoard.getLocalItem()"
                 else {
                     continue;
                 }
-*/
+
                 int x = ChessBoard.charToX(step.charAt(3));
                 int y = Integer.parseInt(step.substring(4));
 
@@ -131,7 +134,7 @@ public class Chess {
 //                  *****************************************************************
                     chessBoard.getLocalItem().toMove(x, y); // либо ест и ходит, либо просто ходит.
 //                  *****************************************************************
-
+                    ChessItem.removedItems.clear();
                     mainBoard.draw(ChessBoard.items);
                     stepscount++;
 
@@ -198,7 +201,6 @@ public class Chess {
 
         return true;
     }
-
     private static boolean canMove(int x, int y) {
         if (chessBoard.getLocalItem() == null) // фигуры, которой собираются ходить, нет на указанной клетке
         {

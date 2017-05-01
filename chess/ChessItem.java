@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
+
 /**
  * Фигуры
  */
@@ -13,11 +15,17 @@ interface Move {
 
 public abstract class ChessItem implements Move {
 
+    public static ArrayList<ChessItem> removedItems = new ArrayList<>();
+
+    public String getClassName(){
+        return getClass().getSimpleName();
+    }
+
     public int getX() {
         return x;
     }
 
-    void setX(int x) {
+    public void setX(int x) {
         this.x = x;
     }
 
@@ -25,7 +33,7 @@ public abstract class ChessItem implements Move {
         return y;
     }
 
-    void setY(int y) {
+    public void setY(int y) {
         this.y = y;
     }
 
@@ -33,19 +41,28 @@ public abstract class ChessItem implements Move {
         return color;
     }
 
-    void setColor(String color) {
+    public int getHadStep() {
+        return hadStep;
+    }
+
+    public void setHadStep(int hadStep) {
+        this.hadStep = hadStep;
+    }
+
+    public void setColor(String color) {
         this.color = color;
     }
 
-    boolean getHadStep() {
+    boolean getHadStepBool() {
         return hadStep != 0;
     }
 
     public String toString(){
-        return getClass().getSimpleName();
+        return getClassName();
     }
 
     void eatIt(int x, int y) {
+        removedItems.add(ChessBoard.isItem(x, y));
         ChessBoard.items.remove(ChessBoard.isItem(x, y));
     }
 
@@ -96,16 +113,16 @@ class King extends ChessItem { // Король
             }
              else return !Chess.kingUnderAttack(this, x, y);
         } else
-            return (!getHadStep() && y == getY() && !Chess.kingUnderAttack(this, getX(), getY()) && !Chess.kingUnderAttack(this, x, y) // рокировка
+            return (!getHadStepBool() && y == getY() && !Chess.kingUnderAttack(this, getX(), getY()) && !Chess.kingUnderAttack(this, x, y) // рокировка
                     &&
                     (
-                            (y == 1 && x == 3 && !ChessBoard.wRook1.getHadStep() && !ChessBoard.hasItem(2, 1) && !ChessBoard.hasItem(3, 1) && !ChessBoard.hasItem(4, 1) &&
+                            (y == 1 && x == 3 && !ChessBoard.wRook1.getHadStepBool() && !ChessBoard.hasItem(2, 1) && !ChessBoard.hasItem(3, 1) && !ChessBoard.hasItem(4, 1) &&
                                     !Chess.kingUnderAttack(this, 2, 1) && !Chess.kingUnderAttack(this, 3, 1) && !Chess.kingUnderAttack(this, 4, 1))
-                                    || (y == 1 && x == 7 && !ChessBoard.wRook2.getHadStep() && !ChessBoard.hasItem(6, 1) && !ChessBoard.hasItem(7, 1) &&
+                                    || (y == 1 && x == 7 && !ChessBoard.wRook2.getHadStepBool() && !ChessBoard.hasItem(6, 1) && !ChessBoard.hasItem(7, 1) &&
                                     !Chess.kingUnderAttack(this, 6, 1) && !Chess.kingUnderAttack(this, 7, 1))
-                                    || (y == 8 && x == 3 && !ChessBoard.bRook1.getHadStep() && !ChessBoard.hasItem(2, 8) && !ChessBoard.hasItem(3, 8) && !ChessBoard.hasItem(4, 8) &&
+                                    || (y == 8 && x == 3 && !ChessBoard.bRook1.getHadStepBool() && !ChessBoard.hasItem(2, 8) && !ChessBoard.hasItem(3, 8) && !ChessBoard.hasItem(4, 8) &&
                                     !Chess.kingUnderAttack(this, 2, 8) && !Chess.kingUnderAttack(this, 3, 8) && !Chess.kingUnderAttack(this, 4, 8))
-                                    || (y == 8 && x == 7 && !ChessBoard.bRook2.getHadStep() && !ChessBoard.hasItem(6, 8) && !ChessBoard.hasItem(7, 8) &&
+                                    || (y == 8 && x == 7 && !ChessBoard.bRook2.getHadStepBool() && !ChessBoard.hasItem(6, 8) && !ChessBoard.hasItem(7, 8) &&
                                     !Chess.kingUnderAttack(this, 6, 8) && !Chess.kingUnderAttack(this, 7, 8))
                     )
             );
@@ -354,9 +371,9 @@ class Pawn extends ChessItem { // Пешка
                 return false;
             } else return true;
 
-        } else if (getColor().equals("white") && !getHadStep() && x == getX() && y == (getY() + 2) && !ChessBoard.hasItem(x, y) && !ChessBoard.hasItem(x, y - 1) // начальный ход пешки на 2 клетки вперед
+        } else if (getColor().equals("white") && !getHadStepBool() && x == getX() && y == (getY() + 2) && !ChessBoard.hasItem(x, y) && !ChessBoard.hasItem(x, y - 1) // начальный ход пешки на 2 клетки вперед
                 ||
-                getColor().equals("black") && !getHadStep() && x == getX() && y == (getY() - 2) && !ChessBoard.hasItem(x, y) && !ChessBoard.hasItem(x, y + 1)) {
+                getColor().equals("black") && !getHadStepBool() && x == getX() && y == (getY() - 2) && !ChessBoard.hasItem(x, y) && !ChessBoard.hasItem(x, y + 1)) {
             return true;
         } else
             return (

@@ -8,7 +8,7 @@ import java.util.Collections;
 public class ChessBoard {
     public static King wKing = new King("white", charToX('e'), 1);//e1
     public static King bKing = new King("black", charToX('e'), 8);//e8
-    static Queen wQueen = new Queen("white", charToX('g'), 4);//d1
+    static Queen wQueen = new Queen("white", charToX('d'), 1);//d1
     static Queen bQueen = new Queen("black", charToX('d'), 8);//d8
     static Rook wRook1 = new Rook("white", charToX('a'), 1);//a1
     static Rook wRook2 = new Rook("white", charToX('h'), 1);//h1
@@ -35,9 +35,9 @@ public class ChessBoard {
     static Pawn bPawn3 = new Pawn("black", charToX('c'), 7);//c7
     static Pawn bPawn4 = new Pawn("black", charToX('d'), 7);//d7
     static Pawn bPawn5 = new Pawn("black", charToX('e'), 7);//e7
-    static Pawn bPawn6 = new Pawn("black", charToX('f'), 6);//f7
-    static Pawn bPawn7 = new Pawn("black", charToX('g'), 5);//g7
-    static Pawn bPawn8 = new Pawn("black", charToX('h'), 7);//h7
+    static Pawn bPawn6 = new Pawn("black", charToX('f'), 7);//f7
+    static Pawn bPawn7 = new Pawn("black", charToX('g'), 7);//g7
+    public static Pawn bPawn8 = new Pawn("black", charToX('h'), 7);//h7
 
     public static ArrayList<ChessItem> items = initializeArray(); // список фигур
 
